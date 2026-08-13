@@ -15,7 +15,7 @@ Three things must exist on this machine:
 
 1. The `video-use` repo cloned somewhere stable.
 2. `ffmpeg` on `$PATH` (plus optional `yt-dlp` for online sources).
-3. A Deepgram API key in `.env` at the repo root (for transcription).
+3. An ElevenLabs API key in `.env` at the repo root (for Scribe transcription).
 
 And one thing must be true about the current agent:
 
@@ -89,27 +89,27 @@ Figure out which agent you are running under, and register once. A symlink of th
 
 If you can't tell which agent you're in, ask the user once: "which agent am I running under — Claude Code, Codex, or something else?" Then pick the right target.
 
-### 5. Deepgram API key
+### 5. ElevenLabs API key
 
-Deepgram does all transcription. Without a key, nothing transcribes.
+Scribe (ElevenLabs) does all transcription. Without a key, nothing transcribes.
 
 1. Check existing state in this order and stop at the first hit:
 
     ```bash
     # a) env var already exported
-    [ -n "$DEEPGRAM_API_KEY" ] && echo "env"
+    [ -n "$ELEVENLABS_API_KEY" ] && echo "env"
     # b) .env at repo root already has it
-    grep -q '^DEEPGRAM_API_KEY=..' ~/Developer/video-use/.env 2>/dev/null && echo "dotenv"
+    grep -q '^ELEVENLABS_API_KEY=..' ~/Developer/video-use/.env 2>/dev/null && echo "dotenv"
     ```
 
 2. If neither is set, ask the user exactly once:
 
-    > I need a Deepgram API key for transcription (word-level timestamps, speaker diarization, filler-word tagging). Grab one at https://console.deepgram.com/ and paste it here — I'll write it to `~/Developer/video-use/.env`. Or if you already have it exported as `DEEPGRAM_API_KEY`, say "use env" and I'll skip.
+    > I need an ElevenLabs API key for transcription (word-level timestamps, speaker diarization, filler tagging). Grab one at https://elevenlabs.io/app/settings/api-keys and paste it here — I'll write it to `~/Developer/video-use/.env`. Or if you already have it exported as `ELEVENLABS_API_KEY`, say "use env" and I'll skip.
 
     When the user pastes a key, write it to `~/Developer/video-use/.env`:
 
     ```bash
-    printf 'DEEPGRAM_API_KEY=%s\n' "$KEY" > ~/Developer/video-use/.env
+    printf 'ELEVENLABS_API_KEY=%s\n' "$KEY" > ~/Developer/video-use/.env
     chmod 600 ~/Developer/video-use/.env
     ```
 
@@ -119,8 +119,8 @@ Deepgram does all transcription. Without a key, nothing transcribes.
 
     ```bash
     curl -s -o /dev/null -w '%{http_code}\n' \
-      -H "Authorization: Token $(sed -n 's/^DEEPGRAM_API_KEY=//p' ~/Developer/video-use/.env)" \
-      https://api.deepgram.com/v1/projects
+      -H "xi-api-key: $(sed -n 's/^ELEVENLABS_API_KEY=//p' ~/Developer/video-use/.env)" \
+      https://api.elevenlabs.io/v1/user
     ```
 
     `200` means the key works. `401` means the user pasted a wrong/expired key — ask once more and stop. Anything else (network, 5xx), move on and verify during first real transcription.
@@ -134,7 +134,7 @@ python ~/Developer/video-use/helpers/timeline_view.py --help >/dev/null && echo 
 ffprobe -version | head -1
 ```
 
-Full transcription test is optional at install time — it burns Deepgram credits. Better to wait until the user hands you their first clip.
+Full transcription test is optional at install time — it burns Scribe credits. Better to wait until the user hands you their first clip.
 
 ### 7. Hand off
 
@@ -158,5 +158,5 @@ Tell the user, in one short message:
 - `yt-dlp` is optional. Don't block install on it; install lazily the first time a user asks to pull from a URL.
 - Node.js/npm are only needed for HyperFrames or Remotion slots. HyperFrames currently requires Node.js 22+.
 - HyperFrames, Remotion, and Manim are optional animation engines. Don't install or prefer one globally during setup; pick the engine per animation slot in `SKILL.md`. HyperFrames can run through `npx --yes hyperframes ...` in the slot directory. Remotion can be scaffolded with `npx create-video@latest` or installed inside the slot before rendering.
-- Never run transcription as part of install verification unless the user explicitly asks — Deepgram costs real money.
+- Never run transcription as part of install verification unless the user explicitly asks — Scribe costs real money.
 - If the user is on Linux without a package manager Claude recognizes, print the manual `ffmpeg` install URL and wait rather than guessing.
