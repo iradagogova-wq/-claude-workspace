@@ -1,6 +1,6 @@
 """Batch-transcribe every video in a directory with 4 parallel workers.
 
-Walks <videos_dir> for common video extensions, runs ElevenLabs Scribe on
+Walks <videos_dir> for common video extensions, runs Deepgram on
 each, writes transcripts to <videos_dir>/edit/transcripts/<name>.json.
 
 Cached per-file: any source that already has a transcript is skipped.
@@ -35,7 +35,7 @@ def find_videos(videos_dir: Path) -> list[Path]:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Parallel batch transcription of a videos directory")
+    ap = argparse.ArgumentParser(description="Parallel batch transcription of a videos directory (Deepgram)")
     ap.add_argument("videos_dir", type=Path, help="Directory containing source videos")
     ap.add_argument(
         "--edit-dir",

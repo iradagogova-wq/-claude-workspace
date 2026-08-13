@@ -1,8 +1,10 @@
-"""Transcribe a video with ElevenLabs Scribe.
+"""Transcribe a video with Deepgram.
 
-Extracts mono 16kHz audio via ffmpeg, uploads to Scribe with verbatim +
-diarize + audio events + word-level timestamps, writes the full response
-to <edit_dir>/transcripts/<video_stem>.json.
+Extracts mono 16kHz audio via ffmpeg, uploads to Deepgram (nova-2 model)
+with diarize + smart-format + filler-words + word-level timestamps, and
+writes a Scribe-schema-compatible transcript to
+<edit_dir>/transcripts/<video_stem>.json — so every downstream helper
+(pack_transcripts.py, render.py, timeline_view.py) keeps working unchanged.
 
 Cached: if the output file already exists, the upload is skipped.
 
@@ -27,7 +29,8 @@ from pathlib import Path
 import requests
 
 
-SCRIBE_URL = "https://api.elevenlabs.io/v1/speech-to-text"
+DEEPGRAM_URL = "https://api.deepgram.com/v1/listen"
+DEEPGRAM_MODEL = "nova-2"
 
 
 def load_api_key() -> str:
@@ -38,11 +41,11 @@ def load_api_key() -> str:
                 if not line or line.startswith("#") or "=" not in line:
                     continue
                 k, v = line.split("=", 1)
-                if k.strip() == "ELEVENLABS_API_KEY":
+                if k.strip() == "DEEPGRAM_API_KEY":
                     return v.strip().strip('"').strip("'")
-    v = os.environ.get("ELEVENLABS_API_KEY", "")
+    v = os.environ.get("DEEPGRAM_API_KEY", "")
     if not v:
-        sys.exit("ELEVENLABS_API_KEY not found in .env or environment")
+        sys.exit("DEEPGRAM_API_KEY not found in .env or environment")
     return v
 
 
@@ -55,36 +58,99 @@ def extract_audio(video_path: Path, dest: Path) -> None:
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-def call_scribe(
+def _deepgram_words_to_scribe_words(dg_payload: dict) -> list[dict]:
+    """Flatten Deepgram's word list into Scribe's {type, text, start, end,
+    speaker_id} shape, synthesizing 'spacing' entries between words so the
+    silence-based phrase grouping in pack_transcripts.py / timeline_view.py
+    needs no changes.
+
+    Deepgram has no audio-event tagging ((laughter), (applause), ...), so
+    no 'audio_event' entries are produced — everything else in the schema
+    downstream code reads is preserved.
+    """
+    try:
+        alt = dg_payload["results"]["channels"][0]["alternatives"][0]
+    except (KeyError, IndexError, TypeError):
+        return []
+
+    words: list[dict] = []
+    prev_end: float | None = None
+    for w in alt.get("words", []):
+        start = w.get("start")
+        end = w.get("end")
+        if start is None or end is None:
+            continue
+
+        if prev_end is not None and start > prev_end:
+            words.append({"type": "spacing", "text": " ", "start": prev_end, "end": start})
+
+        entry: dict = {
+            "type": "word",
+            "text": w.get("punctuated_word") or w.get("word", ""),
+            "start": start,
+            "end": end,
+        }
+        speaker = w.get("speaker")
+        if speaker is not None:
+            entry["speaker_id"] = f"speaker_{speaker}"
+        words.append(entry)
+        prev_end = end
+
+    return words
+
+
+def call_deepgram(
     audio_path: Path,
     api_key: str,
     language: str | None = None,
     num_speakers: int | None = None,
 ) -> dict:
-    data: dict[str, str] = {
-        "model_id": "scribe_v1",
+    params: dict[str, str] = {
+        "model": DEEPGRAM_MODEL,
         "diarize": "true",
-        "tag_audio_events": "true",
-        "timestamps_granularity": "word",
+        "smart_format": "true",
+        "punctuate": "true",
+        "filler_words": "true",
     }
     if language:
-        data["language_code"] = language
+        params["language"] = language
+    else:
+        params["detect_language"] = "true"
     if num_speakers:
-        data["num_speakers"] = str(num_speakers)
+        # Deepgram's diarization auto-detects speaker count; there is no
+        # "expected speakers" parameter in the prerecorded API. Kept as a
+        # CLI/API arg for compatibility with transcribe_batch.py; ignored here.
+        print(
+            f"  note: --num-speakers {num_speakers} is not supported by Deepgram diarization, ignoring",
+            file=sys.stderr,
+        )
 
     with open(audio_path, "rb") as f:
         resp = requests.post(
-            SCRIBE_URL,
-            headers={"xi-api-key": api_key},
-            files={"file": (audio_path.name, f, "audio/wav")},
-            data=data,
+            DEEPGRAM_URL,
+            headers={"Authorization": f"Token {api_key}", "Content-Type": "audio/wav"},
+            params=params,
+            data=f,
             timeout=1800,
         )
 
     if resp.status_code != 200:
-        raise RuntimeError(f"Scribe returned {resp.status_code}: {resp.text[:500]}")
+        raise RuntimeError(f"Deepgram returned {resp.status_code}: {resp.text[:500]}")
 
-    return resp.json()
+    dg_payload = resp.json()
+    try:
+        transcript_text = dg_payload["results"]["channels"][0]["alternatives"][0].get("transcript", "")
+    except (KeyError, IndexError, TypeError):
+        transcript_text = ""
+
+    return {
+        "provider": "deepgram",
+        "model": DEEPGRAM_MODEL,
+        "language": language or "auto",
+        "transcript": transcript_text,
+        "words": _deepgram_words_to_scribe_words(dg_payload),
+        "raw": dg_payload,
+    }
 
 
 def transcribe_one(
@@ -118,7 +184,7 @@ def transcribe_one(
         size_mb = audio.stat().st_size / (1024 * 1024)
         if verbose:
             print(f"  uploading {video.stem}.wav ({size_mb:.1f} MB)", flush=True)
-        payload = call_scribe(audio, api_key, language, num_speakers)
+        payload = call_deepgram(audio, api_key, language, num_speakers)
 
     out_path.write_text(json.dumps(payload, indent=2))
     dt = time.time() - t0
@@ -126,14 +192,13 @@ def transcribe_one(
     if verbose:
         kb = out_path.stat().st_size / 1024
         print(f"  saved: {out_path.name} ({kb:.1f} KB) in {dt:.1f}s")
-        if isinstance(payload, dict) and "words" in payload:
-            print(f"    words: {len(payload['words'])}")
+        print(f"    words: {len(payload['words'])}")
 
     return out_path
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Transcribe a video with ElevenLabs Scribe")
+    ap = argparse.ArgumentParser(description="Transcribe a video with Deepgram")
     ap.add_argument("video", type=Path, help="Path to video file")
     ap.add_argument(
         "--edit-dir",
@@ -151,7 +216,7 @@ def main() -> None:
         "--num-speakers",
         type=int,
         default=None,
-        help="Optional number of speakers when known. Improves diarization accuracy.",
+        help="Accepted for compatibility; Deepgram diarization does not take an expected speaker count.",
     )
     args = ap.parse_args()
 
