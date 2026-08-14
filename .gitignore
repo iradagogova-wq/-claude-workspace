@@ -1,0 +1,6 @@
+
+# BMM reel build — scratch dirs, venv and rendered video stay out of the repo
+.bmm_work/
+.bmm_out/
+.bmm_venv/
+.bmm_build.log
