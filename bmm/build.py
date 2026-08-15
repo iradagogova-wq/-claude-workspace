@@ -20,7 +20,6 @@ for d in (SRC, SEG, TYPE, PR, OUT):
 
 W, H, FPS = 1080, 1920, 30
 F = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-FR = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 MAG, WHT, GREY = (225, 11, 110, 255), (255, 255, 255, 255), (170, 170, 176, 255)
 COL = {"W": WHT, "M": MAG, "G": GREY}
 
@@ -90,7 +89,6 @@ def shadowed(card, blur=22, off=(0, 13), op=155):
     return out
 
 
-# luxury goods, struck through — "не сумка, не украшения"
 c = Image.new("RGBA", (420, 380), (0, 0, 0, 0))
 d = ImageDraw.Draw(c)
 d.rounded_rectangle([60, 150, 300, 330], 18, fill=(232, 230, 226, 250))
@@ -101,7 +99,6 @@ d.ellipse([322, 190, 356, 224], fill=(240, 238, 234, 255))
 d.line([(42, 96), (392, 344)], fill=MAG, width=15)
 shadowed(c).save(f"{PR}/luxury_x.png")
 
-# hand mirror — "смотришь в зеркало"
 c = Image.new("RGBA", (280, 460), (0, 0, 0, 0))
 d = ImageDraw.Draw(c)
 d.rounded_rectangle([116, 250, 164, 440], 20, fill=(214, 211, 206, 250))
@@ -111,7 +108,6 @@ d.chord([44, 38, 236, 268], 150, 250, fill=(255, 255, 255, 235))
 d.arc([44, 38, 236, 268], 0, 360, fill=MAG, width=5)
 shadowed(c).save(f"{PR}/mirror.png")
 
-# ampoule — the точечно beat
 c = Image.new("RGBA", (170, 430), (0, 0, 0, 0))
 d = ImageDraw.Draw(c)
 d.polygon([(72, 18), (98, 18), (104, 96), (66, 96)], fill=(214, 224, 220, 235))
@@ -155,13 +151,13 @@ def save(name, img, keep_full=False):
 
 
 def render(name, text, hint, cy, color=WHT, mw=.92, ml=1,
-           shadow=True, blur=10, op=180, keep_full=False):
+           shadow=True, blur=11, op=195, keep_full=False, upper=True):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    f, lines, s = fit(text.upper(), int(W * mw), hint, ml)
+    f, lines, s = fit(text.upper() if upper else text, int(W * mw), hint, ml)
     mets = [d.textbbox((0, 0), l, font=f) for l in lines]
     hs = [m[3] - m[1] for m in mets]
-    gap = int(s * .22)
+    gap = int(s * .24)
     y = int(H * cy) - (sum(hs) + gap * (len(lines) - 1)) // 2
     for l, m, hh in zip(lines, mets, hs):
         x = (W - (m[2] - m[0])) // 2 - m[0]
@@ -180,54 +176,18 @@ for n, t, mwf in S.HEROES:
 
 for n, t, hint, cy, ck, mw, ml in S.PHRASES:
     render(n, t, hint, cy, COL[ck], mw, ml,
-           blur=16 if n == "ph_final" else 10,
-           op=220 if n == "ph_final" else 180)
-
-
-def row(name, marker, word, idx, y0=.335, step=.088):
-    B, G, S_ = 84, 34, 58
-    img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    f, fb = ImageFont.truetype(F, S_), ImageFont.truetype(F, 32)
-    txt = word.upper()
-    b = d.textbbox((0, 0), txt, font=f)
-    tw, th = b[2] - b[0], b[3] - b[1]
-    block = B + G + tw
-    x0 = (W - block) // 2
-    cy = int(H * (y0 + idx * step))
-    pl = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ImageDraw.Draw(pl).rounded_rectangle(
-        [x0 - 40, cy - B // 2 - 18, x0 + block + 40, cy + B // 2 + 18], 44, fill=(10, 10, 12, 170))
-    img = Image.alpha_composite(img, pl.filter(ImageFilter.GaussianBlur(3)))
-    d = ImageDraw.Draw(img)
-    d.ellipse([x0, cy - B // 2, x0 + B, cy + B // 2], fill=(14, 14, 16, 255), outline=MAG, width=3)
-    if marker == "✕":
-        r = 17
-        cxb = x0 + B // 2
-        d.line([(cxb - r, cy - r), (cxb + r, cy + r)], fill=WHT, width=7)
-        d.line([(cxb + r, cy - r), (cxb - r, cy + r)], fill=WHT, width=7)
-    else:
-        nb = d.textbbox((0, 0), marker, font=fb)
-        d.text((x0 + (B - (nb[2] - nb[0])) // 2 - nb[0], cy - (nb[3] - nb[1]) // 2 - nb[1]),
-               marker, font=fb, fill=WHT)
-    d.text((x0 + B + G - b[0], cy - th // 2 - b[1]), txt, font=f, fill=MAG)
-    save(name, img)
-
-
-for n, mk, wd, ix in S.ROWS_NOT:
-    row(n, mk, wd, ix)
-for n, mk, wd, ix in S.ROWS_WHERE:
-    row(n, mk, wd, ix)
+           blur=16 if n in ("ph_final", "ph_nravlus") else 11,
+           op=225 if n in ("ph_final", "ph_nravlus") else 195)
 
 img = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(img)
-f = ImageFont.truetype(F, 44); t = "@BMM___COSMETOLOG"
+f = ImageFont.truetype(F, 42); t = "@BMM___COSMETOLOG"
 b = d.textbbox((0, 0), t, font=f)
 x, y = (W - (b[2] - b[0])) // 2 - b[0], int(H * .945) - b[1]
 sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
 ImageDraw.Draw(sh).text((x, y), t, font=f, fill=(0, 0, 0, 190))
 img = Image.alpha_composite(img, sh.filter(ImageFilter.GaussianBlur(6)))
 d = ImageDraw.Draw(img)
-d.text((x, y), t, font=f, fill=(255, 255, 255, 240))
+d.text((x, y), t, font=f, fill=(255, 255, 255, 235))
 save("handle", img, keep_full=True)
 json.dump(anchors, open(f"{TYPE}/anchors.json", "w"))
 print("TYPE_DONE", flush=True)
