@@ -4,3 +4,5 @@
 .bmm_out/
 .bmm_venv/
 .bmm_build.log
+bmm_build.log
+.bmm_venv/
