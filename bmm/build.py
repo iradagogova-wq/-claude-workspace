@@ -116,6 +116,15 @@ d.rounded_rectangle([56, 210, 114, 350], 16, fill=(246, 232, 238, 245))
 d.line([(70, 262), (100, 262)], fill=MAG, width=5)
 d.rounded_rectangle([60, 350, 110, 392], 10, fill=(198, 206, 202, 240))
 shadowed(c, 18, (0, 10)).save(f"{PR}/ampoule.png")
+
+c = Image.new("RGBA", (240, 420), (0, 0, 0, 0))
+d = ImageDraw.Draw(c)
+d.rounded_rectangle([50, 90, 190, 400], 30, fill=(236, 234, 230, 240))
+d.rounded_rectangle([92, 26, 148, 96], 12, fill=(210, 208, 204, 255))
+d.rounded_rectangle([70, 190, 170, 300], 10, fill=(255, 255, 255, 235))
+d.line([(88, 232), (152, 232)], fill=MAG, width=6)
+d.line([(88, 258), (130, 258)], fill=(150, 150, 155, 255), width=4)
+shadowed(c, 20, (0, 12)).save(f"{PR}/bottle.png")
 print("PROPS_DONE", flush=True)
 
 # ============================================================= 3. type ======
@@ -203,7 +212,7 @@ TN = {k: np.asarray(v).astype(np.float32) for k, v in TI.items() if AN[k][2]}
 P = {os.path.basename(p)[:-4]: Image.open(p).convert("RGBA") for p in glob.glob(f"{PR}/*.png")}
 yy, xx = np.mgrid[0:H, 0:W]
 rr = np.sqrt(((xx - W / 2) / (W / 2)) ** 2 + ((yy - H / 2) / (H / 2)) ** 2)
-VIG = np.clip(1 - .30 * np.clip((rr - .55) / .85, 0, 1) ** 1.6, 0, 1)[:, :, None]
+VIG = np.clip(1 - .16 * np.clip((rr - .62) / .85, 0, 1) ** 1.6, 0, 1)[:, :, None]
 mc, sc_cache = {}, {}
 
 
@@ -296,7 +305,7 @@ rd = subprocess.Popen(["ffmpeg", "-nostdin", "-v", "error", "-i", f"{EDIT}/base.
                        "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
 wr = subprocess.Popen(["ffmpeg", "-nostdin", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24",
                        "-video_size", f"{W}x{H}", "-framerate", str(FPS), "-i", "-",
-                       "-c:v", "libx264", "-preset", "slow", "-crf", "15", "-profile:v", "high",
+                       "-c:v", "libx264", "-preset", "slow", "-crf", "13", "-profile:v", "high",
                        "-pix_fmt", "yuv420p", "-movflags", "+faststart",
                        f"{EDIT}/body.mp4", "-loglevel", "error"], stdin=subprocess.PIPE)
 
@@ -367,15 +376,15 @@ print("COMPOSITE_DONE", flush=True)
 
 # =========================================================== 5. encodes =====
 for name, args in [
-    ("BMM_master_1080.mp4", ["-preset", "veryslow", "-crf", "20", "-profile:v", "high", "-level", "4.2"]),
-    ("BMM_light_1080.mp4", ["-preset", "slow", "-crf", "26", "-profile:v", "main", "-level", "4.0"]),
+    ("BMM_master_1080.mp4", ["-preset", "veryslow", "-crf", "18", "-profile:v", "high", "-level", "4.2"]),
+    ("BMM_light_1080.mp4", ["-preset", "slow", "-crf", "23", "-profile:v", "main", "-level", "4.0"]),
 ]:
     subprocess.run(["ffmpeg", "-nostdin", "-y", "-i", f"{EDIT}/body.mp4", "-c:v", "libx264"]
                    + args + ["-pix_fmt", "yuv420p", "-movflags", "+faststart",
                              f"{OUT}/{name}", "-loglevel", "error"], check=True)
 subprocess.run(["ffmpeg", "-nostdin", "-y", "-i", f"{EDIT}/body.mp4",
                 "-vf", "scale=720:1280:flags=lanczos", "-c:v", "libx264",
-                "-preset", "slow", "-crf", "26", "-profile:v", "baseline", "-level", "3.1",
+                "-preset", "slow", "-crf", "24", "-profile:v", "baseline", "-level", "3.1",
                 "-pix_fmt", "yuv420p", "-movflags", "+faststart",
                 f"{OUT}/BMM_720.mp4", "-loglevel", "error"], check=True)
 print("ALL_DONE", flush=True)

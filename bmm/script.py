@@ -1,14 +1,19 @@
 """Editorial data for the reel: the cut, the type, the props, the timeline.
 
-Subtitles carry the client's script verbatim. Long sentences are split across
-two consecutive cards rather than rewritten, so nothing is paraphrased.
+Design decisions behind this pass:
 
-The two hug takes (v6 and v8) are the same moment shot twice — only v8 is
-used, so the cut never repeats itself. Source tails carrying a CapCut
-end-card are trimmed here: v8 goes black at 2.30 s, v5 at ~11.5 s,
-v7 at ~3.60 s, and v9's subject turns away after ~4.7 s.
+* The footage stays full-bleed for almost the whole runtime. Shrinking 1080p
+  into a 60 %-wide card looked designed but softened the picture, so the
+  design now lives in the typography and props instead of in the frame size.
+* Subtitles quote the client's script. Dense enumerations are set as stacked
+  lines — the client's own words, one per line — rather than as paragraphs,
+  so nothing is reworded and everything still fits.
+* v6 and v8 are the same hug filmed twice; only v8 is used, so no shot repeats.
 
-Total runtime lands at ~42.3 s.
+Trimmed source tails carrying a CapCut end-card: v8 at 2.30 s, v5 at ~11.5 s,
+v7 at ~3.60 s; v9's subject turns away after ~4.7 s.
+
+Total runtime lands at ~41.3 s.
 """
 
 # ---- the cut: (name, source, in, out) --------------------------------------
@@ -26,109 +31,102 @@ EDL = [
     ("seg11", "v7", 1.90, 3.55),
     ("seg12", "v8", 0.00, 2.10),
 ]
-SLOW_TAIL = ("seg13", "v9", 4.60, 0.45)   # name, source, seconds taken, speed
+SLOW_TAIL = ("seg13", "v9", 4.60, 0.50)   # name, source, seconds taken, speed
 
-# ---- big words that sit BEHIND the video card ------------------------------
+# ---- big words that sit BEHIND the type ------------------------------------
 HEROES = [
-    ("hero_roskosh", "РОСКОШЬ", 1.10),
-    ("hero_filtr", "БЕЗ ФИЛЬТРА", 1.16),
-    ("hero_tochka", "ТОЧЕЧНО", 1.12),
+    ("hero_koja", "КОЖА", 1.06),
+    ("hero_mimika", "МИМИКА", 1.10),
+    ("hero_proporcii", "ПРОПОРЦИИ", 1.16),
     ("hero_uhod", "УХОД", 1.08),
 ]
 
 # ---- foreground phrases: (name, text, size hint, y, colour, width, lines) ---
-# Wording is the client's, unchanged. Sentences too long for one card are
-# split in two and shown back to back (marked _a / _b).
 PHRASES = [
-    ("ph_hook",   "Знаете, что сегодня стало настоящей роскошью для женщины?",
-     78, .745, "W", .90, 3),
+    ("ph_hook", "Три вещи, которые я бы поставила на первое место, "
+                "если хочется всегда выглядеть ухоженно", 68, .745, "W", .90, 4),
 
-    ("ph_not1",   "Не сумка.",                       88, .400, "W", .86, 1),
-    ("ph_not2",   "Не украшения.",                   88, .480, "W", .86, 1),
-    ("ph_not3",   "И даже не количество процедур.",  76, .570, "M", .90, 2),
+    ("n1",       "Первое",        64, .300, "M", .60, 1),
+    ("ph_koja",  "Качество кожи", 96, .390, "W", .88, 1),
+    ("k1", "ровная текстура",           62, .530, "W", .84, 1),
+    ("k2", "достаточная увлажнённость", 62, .605, "W", .84, 1),
+    ("k3", "здоровый кожный барьер",    62, .680, "W", .84, 1),
+    ("k4", "работа с пигментацией",     62, .755, "W", .84, 1),
+    ("ph_dom", "Начинается с грамотно подобранного домашнего ухода "
+               "и ежедневной фотозащиты", 66, .755, "W", .90, 3),
+    ("ph_pokaz1", "Процедуры подключаются уже по показаниям", 72, .760, "M", .90, 2),
 
-    ("ph_zabota", "А выглядеть так, будто вы действительно о себе заботитесь.",
-     74, .755, "W", .90, 3),
+    ("n2",       "Второе", 64, .300, "M", .60, 1),
+    ("ph_vyraj", "Работать с тем, что действительно меняет выражение лица",
+     70, .400, "W", .88, 3),
+    ("ph_botox", "При выраженной активности мимических мышц ботулинотерапия "
+                 "может смягчить мимические линии", 62, .750, "W", .90, 4),
+    ("ph_pokaz2", "Важна не сама процедура — важны показания к ней",
+     72, .755, "W", .90, 2),
 
-    ("ph_filtr",  "Когда нравится кожа без фильтра.", 78, .760, "W", .90, 2),
-    ("ph_zerk",   "Когда утром смотришь в зеркало — и нравишься себе.",
-     72, .760, "W", .90, 3),
-    ("ph_vol_a",  "Когда можешь собрать волосы, не наносить плотный тон",
-     70, .760, "W", .90, 3),
-    ("ph_vol_b",  "и всё равно чувствовать себя красивой.", 74, .760, "W", .90, 2),
+    ("n3",       "Третье", 64, .300, "M", .60, 1),
+    ("ph_garm",  "Сохранять гармонию пропорций", 80, .400, "W", .88, 2),
+    ("ph_zony",  "Губы, подбородок, профиль — важно смотреть, как зона "
+                 "взаимодействует с остальными чертами лица", 60, .750, "W", .90, 4),
+    ("ph_mm",    "Несколько миллиметров в правильном месте иногда дают больше, "
+                 "чем большой объём", 64, .750, "W", .90, 4),
 
-    ("ph_pochemu", "И именно поэтому я так люблю современную косметологию.",
-     72, .760, "W", .90, 3),
+    ("s1", "качество кожи",         66, .330, "W", .84, 1),
+    ("s2", "работа по показаниям",  66, .405, "W", .84, 1),
+    ("s3", "гармоничные пропорции", 66, .480, "W", .84, 1),
+    ("ph_gody", "Результат, который можно поддерживать годами",
+     70, .600, "M", .90, 2),
+    ("ph_cta",  "Сохраняйте эти три пункта", 62, .875, "W", .80, 1),
 
-    ("ph_nebolshe", "Не за возможность сделать больше.", 80, .755, "W", .90, 2),
-    ("ph_toch_a",   "А за возможность точечно дать женщине именно то,",
-     70, .760, "W", .90, 3),
-    ("ph_toch_b",   "что сделает её ещё более ухоженной.", 76, .760, "M", .90, 2),
-
-    ("ph_gde1", "Где-то поработать с качеством кожи.", 66, .400, "W", .88, 2),
-    ("ph_gde2", "Где-то смягчить активную мимику.",    66, .490, "W", .88, 2),
-    ("ph_gde3", "Где-то подчеркнуть черты.",           66, .580, "W", .88, 2),
-
-    ("ph_nravlus", "«Мне нравится, как я выгляжу».", 78, .755, "W", .92, 2),
-    ("ph_final",   "Вот для меня и есть настоящий уход за собой.",
-     80, .775, "W", .90, 2),
-    ("ph_cta",     "подписывайтесь",                 58, .880, "W", .70, 1),
-
-    ("kicker",     "эстетика лица",                  40, .115, "G", .60, 1),
+    ("kicker",  "эстетика лица", 40, .115, "G", .60, 1),
 ]
 
 # ---- timeline: (start, end, key, layer) ------------------------------------
 CUES = [
-    (0.10,  4.50, "kicker",       "front"),
-    (0.10,  4.50, "hero_roskosh", "behind"),
-    (0.40,  4.50, "ph_hook",      "front"),
+    (0.10,  4.40, "kicker",  "front"),
+    (0.35,  4.40, "ph_hook", "front"),
 
-    # three lines stack up and hold together
-    (5.10,  9.40, "ph_not1", "front"),
-    (6.30,  9.40, "ph_not2", "front"),
-    (7.50,  9.40, "ph_not3", "front"),
+    (5.00,  9.60, "hero_koja", "behind"),
+    (5.00,  9.60, "n1",        "front"),
+    (5.20,  9.60, "ph_koja",   "front"),
+    (6.20,  9.60, "k1", "front"),
+    (6.90,  9.60, "k2", "front"),
+    (7.60,  9.60, "k3", "front"),
+    (8.30,  9.60, "k4", "front"),
 
-    (9.90, 13.40, "ph_zabota", "front"),
+    (10.10, 13.60, "ph_dom",    "front"),
+    (14.00, 16.40, "ph_pokaz1", "front"),
 
-    (13.90, 16.20, "hero_filtr", "behind"),
-    (14.00, 16.20, "ph_filtr",   "front"),
-    (16.60, 19.40, "ph_zerk",    "front"),
-    (19.80, 22.00, "ph_vol_a",   "front"),
-    (22.00, 24.20, "ph_vol_b",   "front"),
+    (17.00, 20.40, "hero_mimika", "behind"),
+    (17.00, 20.40, "n2",          "front"),
+    (17.20, 20.40, "ph_vyraj",    "front"),
+    (20.90, 24.40, "ph_botox",    "front"),
+    (24.80, 27.30, "ph_pokaz2",   "front"),
 
-    (24.70, 27.40, "ph_pochemu", "front"),
+    (27.90, 30.90, "hero_proporcii", "behind"),
+    (27.90, 30.90, "n3",             "front"),
+    (28.10, 30.90, "ph_garm",        "front"),
+    (31.30, 34.30, "ph_zony",        "front"),
+    (34.70, 37.60, "ph_mm",          "front"),
 
-    (27.80, 29.70, "hero_tochka",  "behind"),
-    (27.90, 29.70, "ph_nebolshe",  "front"),
-    (30.10, 32.30, "ph_toch_a",    "front"),
-    (32.30, 34.40, "ph_toch_b",    "front"),
-
-    (34.80, 38.60, "ph_gde1", "front"),
-    (36.00, 38.60, "ph_gde2", "front"),
-    (37.20, 38.60, "ph_gde3", "front"),
-
-    (39.00, 40.60, "ph_nravlus", "front"),
-
-    (40.80, 42.20, "hero_uhod", "behind"),
-    (40.80, 42.20, "ph_final",  "front"),
-    (41.20, 42.20, "ph_cta",    "front"),
+    (38.10, 41.10, "hero_uhod", "behind"),
+    (38.10, 41.10, "s1", "front"),
+    (38.60, 41.10, "s2", "front"),
+    (39.10, 41.10, "s3", "front"),
+    (39.70, 41.10, "ph_gody", "front"),
+    (40.20, 41.10, "ph_cta",  "front"),
 ]
 
-# ---- card / full-bleed choreography: (t, scale, angle, cx, cy) -------------
+# ---- frame choreography: mostly full-bleed so the footage keeps its detail --
 KEYS = [
-    (0.00, .60, -4.0, .50, .46), (4.20, .60, -4.0, .50, .46),
-    (5.00, 1.0,  0.0, .50, .50), (9.60, 1.0,  0.0, .50, .50),
-    (10.20, .62, 3.5, .48, .47), (13.20, .62, 3.5, .48, .47),
-    (13.80, 1.0, 0.0, .50, .50), (19.60, 1.0, 0.0, .50, .50),
-    (20.20, .60, -3.5, .50, .47), (23.80, .60, -3.5, .50, .47),
-    (24.40, 1.0, 0.0, .50, .50), (34.40, 1.0, 0.0, .50, .50),
-    (35.00, .60, 3.0, .50, .47), (38.20, .60, 3.0, .50, .47),
-    (38.80, 1.0, 0.0, .50, .50), (42.50, 1.0, 0.0, .50, .50),
+    (0.00, 1.0, 0.0, .50, .50), (16.60, 1.0, 0.0, .50, .50),
+    (17.20, .70, 3.0, .50, .48), (20.20, .70, 3.0, .50, .48),
+    (20.80, 1.0, 0.0, .50, .50), (41.50, 1.0, 0.0, .50, .50),
 ]
 
 # ---- props: (start, end, name, x, y, scale, angle, drift x, drift y) -------
 PROPS = [
-    (5.20,  9.30, "luxury_x", .81, .74, .52,  9, -20, 16),
-    (14.10, 16.10, "mirror",  .82, .30, .56, -10, 20, 16),
-    (30.20, 34.30, "ampoule", .85, .30, .60, -10, 20, 16),
+    (6.30,  9.50, "bottle",  .84, .30, .52, 10, -18, 14),
+    (21.00, 24.30, "ampoule", .85, .30, .56, -9, 18, 14),
+    (31.40, 34.20, "mirror",  .84, .30, .50, 10, -18, 14),
 ]
