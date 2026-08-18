@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<title>Слайд 6</title>
+<link rel="stylesheet" href="common.css">
+<style>
+  .head{ position:absolute; left:76px; top:104px; width:900px; }
+  .head .h1{ font-size:46px; line-height:1.26; letter-spacing:-.6px; }
+  .head .kick{ margin-top:18px; font-size:54px; font-weight:800; letter-spacing:-.9px; color:#fff;
+    text-shadow:0 4px 26px rgba(0,0,0,.55); }
+
+  .cta{ position:absolute; left:76px; top:396px; width:928px; padding:34px 36px 38px; }
+  .cta .cap{ display:flex; align-items:center; gap:20px; font-size:27px; font-weight:500; color:var(--muted); }
+  .cta .cap .dot{ width:12px; height:12px; border-radius:50%; background:var(--pink); box-shadow:0 0 14px rgba(217,146,184,.9); }
+  .cta .line{ display:flex; align-items:center; gap:28px; margin-top:26px; }
+  .word{ position:relative; display:inline-flex; align-items:center; justify-content:center;
+    min-width:392px; height:126px; border-radius:26px; padding:0 46px;
+    background:linear-gradient(135deg,#d07fae 0%, #a9518b 52%, #7d3768 100%);
+    box-shadow:0 20px 46px rgba(150,64,116,.46), inset 0 2px 0 rgba(255,255,255,.32),
+               inset 0 -8px 18px rgba(0,0,0,.22);
+    font-size:66px; font-weight:800; color:#fff; letter-spacing:2px; }
+  .word::after{ content:''; position:absolute; inset:-26px; border-radius:44px;
+    background:radial-gradient(closest-side, rgba(225,140,186,.34), rgba(225,140,186,0) 78%); z-index:-1; }
+  .send{ width:96px; height:96px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(150deg,#f0f0f4 0%, #d7d2de 100%);
+    box-shadow:0 14px 32px rgba(0,0,0,.42), inset 0 2px 0 rgba(255,255,255,.9); }
+  .hint{ margin-top:24px; font-size:25px; font-weight:500; color:var(--muted-dim); }
+
+  .perks{ position:absolute; left:76px; top:722px; width:928px; }
+  .perks .row{ align-items:flex-start; }
+  .perks .txt{ font-size:34px; font-weight:600; color:#fff; line-height:1.34; letter-spacing:-.2px; padding-top:8px; }
+  .perks .sep{ margin:30px 0 30px; width:560px; }
+
+  .brand{ position:absolute; left:76px; bottom:104px; }
+  .brand .mark{ display:flex; align-items:center; gap:18px; }
+  .brand .logo{ font-size:46px; font-weight:800; letter-spacing:4px; color:#fff; }
+  .brand .logo b{ color:var(--pink); font-weight:800; }
+  .brand .tag{ margin-top:12px; font-size:25px; font-weight:500; color:var(--muted-dim); letter-spacing:.4px; }
+  .leaf{ width:56px; height:56px; border-radius:50%;
+    background:linear-gradient(150deg, var(--plum-2), var(--plum-1));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 24px rgba(0,0,0,.4), inset 0 2px 2px rgba(255,255,255,.25); }
+
+  /* warm pool of lamp light on the table + loose tablets */
+  .pool{ position:absolute; right:-60px; bottom:60px; width:820px; height:300px;
+    background:radial-gradient(closest-side, rgba(255,182,116,.22) 0%, rgba(255,168,100,.09) 48%, rgba(255,168,100,0) 76%);
+    filter:blur(8px); }
+  .props{ position:absolute; inset:0; }
+  .shelfset{ position:absolute; right:56px; bottom:152px; width:352px; height:250px; }
+  .shelfset .jarunit{ position:absolute; bottom:0; }
+</style></head>
+<body>
+<div class="stage">
+  <div class="bg-base"></div><div class="bg-cool"></div>
+  <div class="bg-shelf"></div><div class="bg-lamp"></div><div class="bg-lamp low"></div>
+  <div class="bg-table"></div>
+  <div class="bokeh"></div><div class="scrim"></div><div class="grain"></div>
+
+  <div class="content" style="padding:0">
+    <div class="head">
+      <div class="h1">Если ты тоже каждый раз<br>
+        <span class="pink">теряешься перед полкой</span><br>
+        с детскими витаминами —</div>
+      <div class="kick">не выбирай наугад.</div>
+    </div>
+
+    <div class="cta glass">
+      <div class="cap"><span class="dot"></span>Напиши нам в сообщения одно слово</div>
+      <div class="line">
+        <div class="word">ВИТА</div>
+        <div class="send" id="send"></div>
+        <div class="hint" style="margin-top:0">и мы ответим<br>в течение дня</div>
+      </div>
+    </div>
+
+    <div class="perks">
+      <div class="row"><div class="badge" id="p1"></div>
+        <div class="txt">проведём <span class="pink">бесплатную консультацию</span></div></div>
+      <div class="sep"></div>
+      <div class="row"><div class="badge" id="p2"></div>
+        <div class="txt">поможем разобраться<br>в <span class="pink">ассортименте EL VITA</span></div></div>
+    </div>
+
+    <div class="pool"></div>
+    <div class="props" id="props"></div>
+    <div class="shelfset" id="set"></div>
+
+    <div class="brand">
+      <div class="mark">
+        <div class="leaf" id="leaf"></div>
+        <div class="logo">EL <b>VITA</b></div>
+      </div>
+      <div class="tag">витамины для детей и взрослых</div>
+    </div>
+  </div>
+</div>
+
+<script src="art.js"></script>
+<script>
+  document.getElementById('send').innerHTML = `<svg width="44" height="44" viewBox="0 0 24 24" fill="none"
+    stroke="#7d3768" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.4 11.8 19.6 5.2 13.2 20l-2-6.2-6.8-2Z"/><path d="m11.2 13.8 4.6-5.1"/></svg>`;
+  document.getElementById('p1').innerHTML = `<svg width="44" height="44" viewBox="0 0 24 24" fill="none"
+    stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 13.4c0 3.3-3.4 6-7.6 6-1 0-2-.15-2.9-.42L4.2 20.4l1.5-3.7C4.6 15.7 4 14.6 4 13.4c0-3.3 3.4-6 7.6-6"/>
+    <path d="M16.6 3.6v6.2M13.5 6.7h6.2"/></svg>`;
+  document.getElementById('p2').innerHTML = `<svg width="44" height="44" viewBox="0 0 24 24" fill="none"
+    stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4.2" y="3.6" width="15.6" height="16.8" rx="3"/>
+    <path d="M8 8.6h5.4M8 12.2h7.6M8 15.8h4.4"/></svg>`;
+  document.getElementById('leaf').innerHTML = `<svg width="30" height="30" viewBox="0 0 24 24" fill="none"
+    stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19.4 4.6C11 3.6 5.6 7.2 5.2 13c-.2 2.7 1.2 5 3.4 6.1"/>
+    <path d="M19.4 4.6c1 8.4-2.8 13.4-8.6 13.6"/></svg>`;
+
+  /* product group on the table, with reflections */
+  const unit = (o) => `<div class="jarunit" style="left:${o.x}px">${jar(o)}<div class="refl">${jar(o)}</div></div>`;
+  const set = [
+    { x:   0, w:106, h:214, brand:'OMEGA',  title:'3',    color:'#3f6ba6' },
+    { x: 118, w:118, h:242, brand:'EL VITA',title:'KIDS', color:'#a8548a' },
+    { x: 250, w:100, h:202, brand:'VITAMIN',title:'D3',   color:'#c99123', tint:'cream' },
+  ];
+  document.getElementById('set').innerHTML = set.map(unit).join('');
+
+  document.getElementById('props').innerHTML = tablets([
+    { x: 588, y: 1250, r: 17, c1:'#f0c8d8', c2:'#cf94b2' },
+    { x: 638, y: 1296, r: 15, c1:'#f6e2c4', c2:'#d6b184' },
+    { x: 556, y: 1316, r: 16, c1:'#d9cff0', c2:'#a99cd0' },
+    { x: 660, y: 1240, r: 13, c1:'#f3d5e2', c2:'#c98fae' },
+    { x: 480, y: 1288, r: 14, c1:'#f6e2c4', c2:'#d6b184' },
+    { x: 988, y: 1288, r: 16, c1:'#f6e2c4', c2:'#d6b184' },
+    { x:1032, y: 1242, r: 14, c1:'#d9cff0', c2:'#a99cd0' },
+    { x: 928, y: 1322, r: 15, c1:'#f0c8d8', c2:'#cf94b2' },
+  ]);
+
+  paintScene({ bokehCount: 16 });
+</script>
+</body></html>

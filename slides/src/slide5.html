@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<title>Слайд 5</title>
+<link rel="stylesheet" href="common.css">
+<style>
+  .quote-card{ position:absolute; left:76px; top:188px; width:928px; padding:44px 46px 46px 50px; }
+  .quote-mark{ position:absolute; left:-28px; top:-32px; }
+  .quote-card .q{ font-size:38px; font-weight:700; line-height:1.32; color:var(--ink); letter-spacing:-.4px; }
+
+  /* shelf the jars stand on */
+  .plank{ position:absolute; left:0; right:0; top:802px; height:28px;
+    background:linear-gradient(180deg,#6d4835 0%,#573527 42%,#38201a 100%);
+    box-shadow:0 20px 46px rgba(0,0,0,.55); }
+  .plank::before{ content:''; position:absolute; left:0; right:0; top:0; height:2px;
+    background:linear-gradient(90deg, rgba(255,200,150,0) 0%, rgba(255,205,155,.30) 26%, rgba(255,216,172,.78) 66%, rgba(255,200,150,.06) 100%);
+    filter:blur(.6px); }
+  .plank-glow{ position:absolute; left:0; right:0; top:742px; height:64px;
+    background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.30) 100%); filter:blur(7px); }
+
+  /* out-of-focus upper shelf — depth behind the main row */
+  .shelf-far{ position:absolute; left:0; top:424px; width:680px; height:180px;
+    filter:blur(6px); opacity:.34;
+    -webkit-mask-image:linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 62%, rgba(0,0,0,0) 100%); }
+  .shelf-far .plank2{ position:absolute; left:0; right:0; top:148px; height:16px;
+    background:linear-gradient(180deg,#5d3c2c 0%,#452a20 55%,#2e1a15 100%); }
+  .shelf-far .jarunit{ position:absolute; bottom:32px; }
+
+  .compare{ position:absolute; left:76px; top:472px; width:928px; height:440px; }
+  .col{ position:absolute; top:0; height:100%; }
+  .col.left{ left:0; width:470px; }
+  .col.right{ left:520px; width:408px; }
+  .vdiv{ position:absolute; left:494px; top:40px; height:286px; border-left:2px dashed rgba(255,255,255,.15); }
+  .cluster{ position:absolute; left:0; top:0; width:470px; height:340px; }
+  .cluster .jarunit{ position:absolute; }
+  .cluster .back{ filter:saturate(.72) brightness(.74); }
+  .cluster .front{ filter:saturate(.9) brightness(.98); }
+
+  .solo{ position:absolute; left:0; top:0; filter:drop-shadow(0 0 26px rgba(228,152,192,.42)); }
+  .solo-glow{ position:absolute; left:30px; top:20px; width:350px; height:330px;
+    background:radial-gradient(circle at 50% 50%, rgba(230,152,192,.40) 0%, rgba(203,116,166,.17) 42%, rgba(203,116,166,0) 70%);
+    filter:blur(4px); }
+
+  .chip{ position:absolute; top:376px; display:inline-flex; align-items:center; gap:14px;
+    padding:15px 28px; border-radius:999px; font-size:25px; font-weight:600; letter-spacing:-.2px; }
+  .chip.mute{ left:24px; color:#b6acc2; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.13); }
+  .chip.hot{ left:8px; color:#fff; background:linear-gradient(135deg, rgba(198,112,160,.46), rgba(140,64,110,.36));
+    border:1px solid rgba(232,160,200,.55); box-shadow:0 14px 30px rgba(140,60,105,.32); }
+
+  .concl{ position:absolute; left:76px; top:962px; width:928px; }
+  .concl .sep{ margin:34px 0 36px; width:100%; }
+  .final{ display:flex; gap:30px; align-items:flex-start; padding:32px 34px 34px 30px;
+    border-radius:30px; border-left:5px solid var(--pink);
+    background:linear-gradient(100deg, rgba(178,98,146,.26) 0%, rgba(120,58,100,.12) 58%, rgba(120,58,100,.02) 100%); }
+  .final .h2{ padding-top:10px; }
+</style></head>
+<body>
+<div class="stage">
+  <div class="bg-base"></div><div class="bg-cool"></div>
+  <div class="bg-shelf"></div><div class="bg-lamp"></div>
+  <div class="bg-table"></div>
+  <div class="bokeh"></div><div class="scrim"></div>
+  <div class="shelf-far" id="far"></div>
+  <div class="plank-glow"></div><div class="plank"></div>
+  <div class="grain"></div>
+
+  <div class="content" style="padding:0">
+    <div class="eyebrow" style="position:absolute;left:76px;top:100px">Иногда родитель думает:</div>
+
+    <div class="quote-card glass">
+      <div class="badge quote-mark" id="qm"></div>
+      <div class="q">«Возьму <span class="pink w800">самый полный комплекс</span> —<br>так будет надёжнее».</div>
+    </div>
+
+    <div class="compare">
+      <div class="vdiv"></div>
+      <div class="col left">
+        <div class="cluster" id="cluster"></div>
+        <div class="chip mute"><span id="ic-x"></span>больше компонентов</div>
+      </div>
+      <div class="col right">
+        <div class="solo-glow"></div>
+        <div class="solo" id="solo"></div>
+        <div class="chip hot"><span id="ic-v"></span>то, что нужно ребёнку</div>
+      </div>
+    </div>
+
+    <div class="concl">
+      <div class="h2">Но грамотный выбор — это<br><span class="pink">не максимальное количество</span> компонентов.</div>
+      <div class="sep"></div>
+      <div class="final">
+        <div class="badge" id="chk"></div>
+        <div class="h2">Это выбор, который <span class="pink">соответствует<br>конкретной ситуации</span> ребёнка.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="art.js"></script>
+<script>
+  document.getElementById('qm').innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+    stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9.5 6.5C7 8 5.8 10 5.8 12.6h3.1v4.9H4.2v-4.9c0-3.4 1.6-6 4.4-7.6l.9 1.5Z"/>
+    <path d="M18.6 6.5c-2.5 1.5-3.7 3.5-3.7 6.1H18v4.9h-4.7v-4.9c0-3.4 1.6-6 4.4-7.6l.9 1.5Z"/></svg>`;
+  document.getElementById('chk').innerHTML = `<svg width="42" height="42" viewBox="0 0 24 24" fill="none"
+    stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.6"/><path d="m8.4 12.2 2.6 2.6 4.8-5.2"/></svg>`;
+  document.getElementById('ic-x').innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+    stroke="#b6acc2" stroke-width="2.1" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg>`;
+  document.getElementById('ic-v').innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+    stroke="#f0bcd8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.6 4.4 4.4L19 7"/></svg>`;
+
+  /* crowded shelf: back row further away, front row closer — base line = plank */
+  const BASE_BACK = 322, BASE_FRONT = 332;
+  const back = [
+    { x:  4, w: 78, h: 164, brand:'VITAMIN', title:'C',    color:'#c98a24' },
+    { x: 96, w: 74, h: 156, brand:'ZINC',    title:'',     color:'#5f8f6b', tint:'cream' },
+    { x:186, w: 80, h: 168, brand:'OMEGA',   title:'3',    color:'#3f6ba6' },
+    { x:280, w: 76, h: 160, brand:'IRON',    title:'',     color:'#a05a4a', tint:'cream' },
+    { x:368, w: 74, h: 152, brand:'SELEN',   title:'',     color:'#7a5bb0' },
+  ];
+  const front = [
+    { x: 34, w: 98, h: 202, brand:'MULTI',   title:'KIDS',      color:'#c2607f' },
+    { x:150, w: 94, h: 194, brand:'',        title:'MAGNESIUM', color:'#7a5bb0', tint:'cream' },
+    { x:258, w: 92, h: 190, brand:'VITAMIN', title:'D3',        color:'#c99123' },
+    { x:362, w: 88, h: 182, brand:'IMMUNE',  title:'KIDS',      color:'#5f8f6b' },
+  ];
+  const put = (arr, cls, base) => arr.map(c =>
+    `<div class="jarunit ${cls}" style="left:${c.x}px;top:${base - c.h}px">
+       ${jar({ w:c.w, h:c.h, brand:c.brand, title:c.title, color:c.color, tint:c.tint || 'amber' })}</div>`).join('');
+  document.getElementById('cluster').innerHTML =
+    put(back, 'back', BASE_BACK) + put(front, 'front', BASE_FRONT);
+
+  const SOLO = { w:152, h:308 };
+  document.getElementById('solo').innerHTML =
+    `<div class="jarunit" style="position:absolute;left:${(408 - SOLO.w) / 2}px;top:${332 - SOLO.h}px">
+       ${jar({ ...SOLO, brand:'EL VITA', title:'KIDS', color:'#a8548a' })}</div>`;
+
+  /* blurred back-of-room shelf so the frame does not read as empty */
+  const far = [
+    { x: 12, w: 58, h: 96 }, { x: 78, w: 54, h: 86 }, { x: 140, w: 60, h: 100 },
+    { x: 208, w: 52, h: 84 }, { x: 268, w: 58, h: 94 }, { x: 334, w: 54, h: 88 },
+    { x: 396, w: 60, h: 98 }, { x: 464, w: 52, h: 82 }, { x: 524, w: 56, h: 92 },
+  ];
+  document.getElementById('far').innerHTML = '<div class="plank2"></div>' + far.map((c, i) =>
+    `<div class="jarunit" style="left:${c.x}px">
+       ${jar({ w:c.w, h:c.h, brand:'', title:'', color:'#8a8a8a', tint: i % 3 === 1 ? 'cream' : 'amber', sub:2 })}</div>`).join('');
+
+  paintScene({ bokehCount: 14 });
+</script>
+</body></html>
