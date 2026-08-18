@@ -1,0 +1,5 @@
+.DS_Store
+references/**/*.png
+references/**/*.jpg
+references/**/*.mp4
+!references/**/README.md
