@@ -114,3 +114,17 @@ body{ font-family:'Montserrat', sans-serif; -webkit-font-smoothing:antialiased; 
   opacity:.26; filter:blur(2.6px); pointer-events:none;
   -webkit-mask-image:linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.35) 22%, rgba(0,0,0,0) 52%);
 }
+
+/* ─────────── photo mode: сгенерированный кадр с персонажами как фон ───────────
+   render.mjs включает body.has-frame, если найден slides/src/frames/<slide>.png.
+   Тогда нарисованная кодом сцена (полка, стол, банки) прячется, а текст
+   ложится в левую тёмную колонку — как в слайдах 1–4. */
+.photo{ position:absolute; inset:0; background-size:cover; background-position:center top; }
+body:not(.has-frame) .photo{ display:none; }
+body.has-frame .code-scene{ display:none; }
+body.has-frame .scrim{
+  background:
+    linear-gradient(96deg, rgba(14,11,26,.94) 0%, rgba(14,11,26,.88) 30%, rgba(14,11,26,.55) 52%, rgba(14,11,26,.10) 76%, rgba(14,11,26,0) 100%),
+    linear-gradient(180deg, rgba(12,10,24,.60) 0%, rgba(12,10,24,.10) 24%, rgba(12,10,24,0) 60%, rgba(10,8,20,.62) 100%);
+}
+body.has-frame .txtcol{ width:600px; }

@@ -47,12 +47,23 @@
   .props{ position:absolute; inset:0; }
   .shelfset{ position:absolute; right:56px; bottom:152px; width:352px; height:250px; }
   .shelfset .jarunit{ position:absolute; bottom:0; }
+  /* photo mode: кадр справа, текст в левой колонке */
+  body.has-frame .head{ width:620px; }
+  body.has-frame .head .h1{ font-size:40px; }
+  body.has-frame .head .kick{ font-size:46px; }
+  body.has-frame .cta{ top:356px; width:640px; padding:28px 30px 32px; }
+  body.has-frame .word{ min-width:300px; height:104px; font-size:54px; }
+  body.has-frame .send{ width:80px; height:80px; }
+  body.has-frame .cta .hint{ font-size:22px; }
+  body.has-frame .perks{ top:640px; width:640px; }
+  body.has-frame .perks .txt{ font-size:31px; }
+  body.has-frame .perks .sep{ width:460px; }
 </style></head>
 <body>
 <div class="stage">
-  <div class="bg-base"></div><div class="bg-cool"></div>
-  <div class="bg-shelf"></div><div class="bg-lamp"></div><div class="bg-lamp low"></div>
-  <div class="bg-table"></div>
+  <div class="bg-base"></div><div class="photo"></div><div class="bg-cool"></div>
+  <div class="bg-shelf code-scene"></div><div class="bg-lamp"></div><div class="bg-lamp low"></div>
+  <div class="bg-table code-scene"></div>
   <div class="bokeh"></div><div class="scrim"></div><div class="grain"></div>
 
   <div class="content" style="padding:0">
@@ -80,9 +91,9 @@
         <div class="txt">поможем разобраться<br>в <span class="pink">ассортименте EL VITA</span></div></div>
     </div>
 
-    <div class="pool"></div>
-    <div class="props" id="props"></div>
-    <div class="shelfset" id="set"></div>
+    <div class="pool code-scene"></div>
+    <div class="props code-scene" id="props"></div>
+    <div class="shelfset code-scene" id="set"></div>
 
     <div class="brand">
       <div class="mark">

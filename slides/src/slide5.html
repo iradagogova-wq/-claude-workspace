@@ -52,15 +52,22 @@
     border-radius:30px; border-left:5px solid var(--pink);
     background:linear-gradient(100deg, rgba(178,98,146,.26) 0%, rgba(120,58,100,.12) 58%, rgba(120,58,100,.02) 100%); }
   .final .h2{ padding-top:10px; }
+  /* photo mode: кадр справа, текст в левой колонке */
+  body.has-frame .quote-card{ width:600px; padding:36px 34px 38px 38px; }
+  body.has-frame .quote-card .q{ font-size:34px; }
+  body.has-frame .concl{ top:826px; width:640px; }
+  body.has-frame .concl .h2{ font-size:33px; }
+  body.has-frame .concl .sep{ width:520px; }
+  body.has-frame .final .h2{ font-size:32px; }
 </style></head>
 <body>
 <div class="stage">
-  <div class="bg-base"></div><div class="bg-cool"></div>
-  <div class="bg-shelf"></div><div class="bg-lamp"></div>
-  <div class="bg-table"></div>
+  <div class="bg-base"></div><div class="photo"></div><div class="bg-cool"></div>
+  <div class="bg-shelf code-scene"></div><div class="bg-lamp"></div>
+  <div class="bg-table code-scene"></div>
   <div class="bokeh"></div><div class="scrim"></div>
-  <div class="shelf-far" id="far"></div>
-  <div class="plank-glow"></div><div class="plank"></div>
+  <div class="shelf-far code-scene" id="far"></div>
+  <div class="plank-glow code-scene"></div><div class="plank code-scene"></div>
   <div class="grain"></div>
 
   <div class="content" style="padding:0">
@@ -71,7 +78,7 @@
       <div class="q">«Возьму <span class="pink w800">самый полный комплекс</span> —<br>так будет надёжнее».</div>
     </div>
 
-    <div class="compare">
+    <div class="compare code-scene">
       <div class="vdiv"></div>
       <div class="col left">
         <div class="cluster" id="cluster"></div>
@@ -84,7 +91,7 @@
       </div>
     </div>
 
-    <div class="concl">
+    <div class="concl txtcol">
       <div class="h2">Но грамотный выбор — это<br><span class="pink">не максимальное количество</span> компонентов.</div>
       <div class="sep"></div>
       <div class="final">
